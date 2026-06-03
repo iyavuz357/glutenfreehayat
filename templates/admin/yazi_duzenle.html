@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Yazı Düzenle — Gluten Free Hayat{% endblock %}
+
+{% block content %}
+
+<section style="max-width:750px; margin:0 auto;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--primary); margin-bottom:1.5rem;">
+        Yazı Düzenle
+    </h1>
+
+    <div class="card" style="padding:2rem;">
+        <form method="POST" enctype="multipart/form-data">
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Başlık</label>
+                <input type="text" name="baslik" value="{{ yazi.baslik }}" required style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Özet</label>
+                <input type="text" name="ozet" value="{{ yazi.ozet or '' }}" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Kategori</label>
+                <select name="kategori" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+                    <option value="Blog" {% if yazi.kategori == 'Blog' %}selected{% endif %}>Blog</option>
+                    <option value="Sağlık" {% if yazi.kategori == 'Sağlık' %}selected{% endif %}>Sağlık</option>
+                    <option value="Deneyim" {% if yazi.kategori == 'Deneyim' %}selected{% endif %}>Deneyim</option>
+                    <option value="Rehber" {% if yazi.kategori == 'Rehber' %}selected{% endif %}>Rehber</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">İçerik</label>
+                <textarea name="icerik" required rows="12" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg); resize:vertical;">{{ yazi.icerik }}</textarea>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Kapak Görseli</label>
+                {% if yazi.gorsel %}
+                <img src="{{ url_for('static', filename='img/uploads/' + yazi.gorsel) }}" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-bottom:0.5rem;">
+                {% endif %}
+                <input type="file" name="gorsel" accept="image/*" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn" style="border:none; cursor:pointer;">Kaydet</button>
+                <a href="/admin" class="btn" style="background:var(--border); color:var(--text);">İptal</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

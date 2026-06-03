@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Girişi — Gluten Free Hayat{% endblock %}
+
+{% block content %}
+
+<section style="max-width:400px; margin:0 auto;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--primary); margin-bottom:1.5rem;">
+        Admin Girişi
+    </h1>
+
+    {% if hata %}
+    <p style="color:red; margin-bottom:1rem;">{{ hata }}</p>
+    {% endif %}
+
+    <div class="card" style="padding:2rem;">
+        <form method="POST">
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Şifre</label>
+                <input type="password" name="sifre" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+            <button type="submit" class="btn" style="width:100%; text-align:center; border:none; cursor:pointer;">
+                Giriş Yap
+            </button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

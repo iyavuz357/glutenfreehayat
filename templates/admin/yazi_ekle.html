@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Yeni Yazı — Gluten Free Hayat{% endblock %}
+
+{% block content %}
+
+<section style="max-width:750px; margin:0 auto;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--primary); margin-bottom:1.5rem;">
+        Yeni Yazı Ekle
+    </h1>
+
+    <div class="card" style="padding:2rem;">
+        <form method="POST" enctype="multipart/form-data">
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Başlık</label>
+                <input type="text" name="baslik" required style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Özet</label>
+                <input type="text" name="ozet" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);" placeholder="Kısa açıklama (opsiyonel)">
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Kategori</label>
+                <select name="kategori" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+                    <option value="Blog">Blog</option>
+                    <option value="Sağlık">Sağlık</option>
+                    <option value="Deneyim">Deneyim</option>
+                    <option value="Rehber">Rehber</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">İçerik</label>
+                <textarea name="icerik" required rows="12" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg); resize:vertical;"></textarea>
+            </div>
+
+            <div style="display:flex; gap:1rem;">
+                <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Kapak Görseli</label>
+                <input type="file" name="gorsel" accept="image/*" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+                <button type="submit" class="btn" style="border:none; cursor:pointer;">Yayınla</button>
+                
+                <a href="/admin" class="btn" style="background:var(--border); color:var(--text);">İptal</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Tarif Düzenle — Gluten Free Hayat{% endblock %}
+
+{% block content %}
+
+<section style="max-width:750px; margin:0 auto;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--primary); margin-bottom:1.5rem;">
+        Tarif Düzenle
+    </h1>
+
+    <div class="card" style="padding:2rem;">
+        <form method="POST" enctype="multipart/form-data">
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Tarif Adı</label>
+                <input type="text" name="baslik" value="{{ tarif.baslik }}" required style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+                <div>
+                    <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Süre</label>
+                    <input type="text" name="sure" value="{{ tarif.sure or '' }}" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+                </div>
+                <div>
+                    <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Zorluk</label>
+                    <select name="zorluk" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+                        <option value="Kolay" {% if tarif.zorluk == 'Kolay' %}selected{% endif %}>Kolay</option>
+                        <option value="Orta" {% if tarif.zorluk == 'Orta' %}selected{% endif %}>Orta</option>
+                        <option value="Zor" {% if tarif.zorluk == 'Zor' %}selected{% endif %}>Zor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Malzemeler</label>
+                <textarea name="malzemeler" required rows="6" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg); resize:vertical;">{{ tarif.malzemeler }}</textarea>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Yapılış</label>
+                <textarea name="yapilis" required rows="10" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg); resize:vertical;">{{ tarif.yapilis }}</textarea>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Kapak Görseli</label>
+                {% if tarif.gorsel %}
+                <img src="{{ url_for('static', filename='img/uploads/' + tarif.gorsel) }}" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-bottom:0.5rem;">
+                {% endif %}
+                <input type="file" name="gorsel" accept="image/*" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
+            </div>
+
+            <div style="display:flex; gap:1rem;">
+                <button type="submit" class="btn" style="border:none; cursor:pointer;">Kaydet</button>
+                <a href="/admin" class="btn" style="background:var(--border); color:var(--text);">İptal</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

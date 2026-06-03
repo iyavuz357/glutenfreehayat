@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Paneli — Gluten Free Hayat{% endblock %}
+
+{% block content %}
+
+<section style="margin-bottom:2rem; display:flex; justify-content:space-between; align-items:center;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2rem; color:var(--primary);">Admin Paneli</h1>
+    <a href="/admin/cikis" style="color:red; font-weight:700;">Çıkış</a>
+</section>
+
+<div style="display:flex; gap:1rem; margin-bottom:2rem;">
+    <a href="/admin/yazi/ekle" class="btn">+ Yeni Yazı</a>
+    <a href="/admin/tarif/ekle" class="btn" style="background:var(--accent);">+ Yeni Tarif</a>
+</div>
+
+<h2 style="font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--primary); margin-bottom:1rem;">Yazılar</h2>
+{% if yazilar %}
+<div class="grid">
+   {% for yazi in yazilar %}
+<div class="card">
+    <span class="tag">{{ yazi.kategori }}</span>
+    <h2>{{ yazi.baslik }}</h2>
+    <p style="font-size:0.85rem; color:var(--accent);">🗓 {{ yazi.tarih | turkce_tarih }}</p>
+    <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+        <a href="/admin/yazi/duzenle/{{ yazi.id }}" class="btn" style="font-size:0.85rem; padding:0.4rem 1rem;">Düzenle</a>
+        <a href="/admin/yazi/sil/{{ yazi.id }}" class="btn" style="font-size:0.85rem; padding:0.4rem 1rem; background:red;" onclick="return confirm('Bu yazıyı silmek istediğine emin misin?')">Sil</a>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p style="font-weight:300;">Henüz yazı yok.</p>
+{% endif %}
+
+<h2 style="font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--primary); margin:2rem 0 1rem;">Tarifler</h2>
+{% if tarifler %}
+<div class="grid">
+    {% for tarif in tarifler %}
+<div class="card">
+    <span class="tag">{{ tarif.zorluk or 'Tarif' }}</span>
+    <h2>{{ tarif.baslik }}</h2>
+    <p style="font-size:0.85rem; color:var(--accent);">⏱ {{ tarif.sure or 'Belirtilmemiş' }}</p>
+    <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+        <a href="/admin/tarif/duzenle/{{ tarif.id }}" class="btn" style="font-size:0.85rem; padding:0.4rem 1rem;">Düzenle</a>
+        <a href="/admin/tarif/sil/{{ tarif.id }}" class="btn" style="font-size:0.85rem; padding:0.4rem 1rem; background:red;" onclick="return confirm('Bu tarifi silmek istediğine emin misin?')">Sil</a>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p style="font-weight:300;">Henüz tarif yok.</p>
+{% endif %}
+
+{% endblock %}

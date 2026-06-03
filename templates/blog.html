@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Blog — Gluten Free Hayat{% endblock %}
+
+{% block content %}
+
+<section style="margin-bottom: 2rem;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--primary);">Blog</h1>
+    <p style="font-weight:300; margin-top:0.5rem;">Çölyak yolculuğumdan notlar, deneyimler ve bilgiler.</p>
+</section>
+
+{% if yazilar %}
+    <div class="grid">
+        {% for yazi in yazilar %}
+        <div class="card" style="padding:0; overflow:hidden;">
+            {% if yazi.gorsel %}
+            <img src="{{ url_for('static', filename='img/uploads/' + yazi.gorsel) }}"
+                 alt="{{ yazi.baslik }}"
+                 style="width:100%; height:200px; object-fit:cover;">
+            {% endif %}
+            <div style="padding:1.5rem;">
+                <span class="tag">{{ yazi.kategori }}</span>
+                <h2><a href="/blog/{{ yazi.id }}">{{ yazi.baslik }}</a></h2>
+                <p>{{ yazi.ozet or yazi.icerik[:120] }}...</p>
+                <p style="margin-top:1rem; font-size:0.85rem; color:var(--accent);">
+                    🗓 {{ yazi.tarih | turkce_tarih }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem;">
+        <p style="font-size:1.1rem;">Henüz yazı yok — yakında burada olacak ✍️</p>
+    </div>
+{% endif %}
+
+{% endblock %}

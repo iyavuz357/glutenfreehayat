@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gluten Free Hayat{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                🌾 Gluten Free Hayat
+            </div>
+            <ul>
+                <li><a href="/">Anasayfa</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/tarifler">Tarifler</a></li>
+                <li><a href="/hakkimda">Hakkımda</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2026 Gluten Free Hayat · Sevgiyle hazırlandı 🌿</p>
+    </footer>
+
+</body>
+</html>

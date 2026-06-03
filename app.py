@@ -1,0 +1,215 @@
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'glutenfreehayat-gizli-anahtar-2026'
+
+UPLOAD_FOLDER = 'static/img/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+ADMIN_SIFRE = 'admin123'
+
+db = SQLAlchemy(app)
+
+# ===== MODELLER =====
+AYLAR = {
+    1: 'Ocak', 2: 'Şubat', 3: 'Mart', 4: 'Nisan',
+    5: 'Mayıs', 6: 'Haziran', 7: 'Temmuz', 8: 'Ağustos',
+    9: 'Eylül', 10: 'Ekim', 11: 'Kasım', 12: 'Aralık'
+}
+def gorsel_yukle(dosya):
+    if dosya and dosya.filename != '':
+        ext = dosya.filename.rsplit('.', 1)[-1].lower()
+        if ext in ALLOWED_EXTENSIONS:
+            filename = secure_filename(dosya.filename)
+            dosya.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return filename
+    return None
+
+def turkce_tarih(dt):
+    return f"{dt.day} {AYLAR[dt.month]} {dt.year}"
+
+class Yazi(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    baslik = db.Column(db.String(200), nullable=False)
+    icerik = db.Column(db.Text, nullable=False)
+    kategori = db.Column(db.String(50), default='Blog')
+    tarih = db.Column(db.DateTime, default=datetime.utcnow)
+    ozet = db.Column(db.String(300))
+    gorsel = db.Column(db.String(200))
+
+    def __repr__(self):
+        return f'<Yazi {self.baslik}>'
+
+class Tarif(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    baslik = db.Column(db.String(200), nullable=False)
+    malzemeler = db.Column(db.Text, nullable=False)
+    yapilis = db.Column(db.Text, nullable=False)
+    sure = db.Column(db.String(50))
+    zorluk = db.Column(db.String(50))
+    gorsel = db.Column(db.String(200))
+    tarih = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Tarif {self.baslik}>'
+
+# ===== ROTALAR =====
+
+@app.route("/")
+def anasayfa():
+    son_yazilar = Yazi.query.order_by(Yazi.tarih.desc()).limit(3).all()
+    son_tarifler = Tarif.query.order_by(Tarif.tarih.desc()).limit(3).all()
+    return render_template("index.html", yazilar=son_yazilar, tarifler=son_tarifler)
+
+@app.route("/blog")
+def blog():
+    yazilar = Yazi.query.order_by(Yazi.tarih.desc()).all()
+    return render_template("blog.html", yazilar=yazilar)
+
+@app.route("/blog/<int:yazi_id>")
+def yazi_detay(yazi_id):
+    yazi = Yazi.query.get_or_404(yazi_id)
+    return render_template("yazi_detay.html", yazi=yazi)
+
+@app.route("/tarifler")
+def tarifler():
+    tarifler = Tarif.query.order_by(Tarif.tarih.desc()).all()
+    return render_template("tarifler.html", tarifler=tarifler)
+
+@app.route("/hakkimda")
+def hakkimda():
+    return render_template("hakkimda.html")
+
+# ===== VERİTABANI OLUŞTUR =====
+@app.route("/admin")
+def admin():
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    yazilar = Yazi.query.order_by(Yazi.tarih.desc()).all()
+    tarifler = Tarif.query.order_by(Tarif.tarih.desc()).all()
+    return render_template("admin/panel.html", yazilar=yazilar, tarifler=tarifler)
+
+@app.route("/admin/giris", methods=['GET', 'POST'])
+def admin_giris():
+    if request.method == 'POST':
+        if request.form.get('sifre') == ADMIN_SIFRE:
+            session['admin'] = True
+            return redirect('/admin')
+        return render_template("admin/giris.html", hata="Şifre yanlış!")
+    return render_template("admin/giris.html")
+
+@app.route("/admin/cikis")
+def admin_cikis():
+    session.pop('admin', None)
+    return redirect('/')
+
+@app.route("/admin/yazi/ekle", methods=['GET', 'POST'])
+def yazi_ekle():
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    if request.method == 'POST':
+        gorsel_adi = gorsel_yukle(request.files.get('gorsel'))
+        yazi = Yazi(
+            baslik=request.form['baslik'],
+            icerik=request.form['icerik'],
+            ozet=request.form['ozet'],
+            kategori=request.form['kategori'],
+            gorsel=gorsel_adi
+        )
+        db.session.add(yazi)
+        db.session.commit()
+        return redirect('/admin')
+    return render_template("admin/yazi_ekle.html")
+
+@app.route("/admin/tarif/ekle", methods=['GET', 'POST'])
+def tarif_ekle():
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    if request.method == 'POST':
+        gorsel_adi = gorsel_yukle(request.files.get('gorsel'))
+        tarif = Tarif(
+            baslik=request.form['baslik'],
+            malzemeler=request.form['malzemeler'],
+            yapilis=request.form['yapilis'],
+            sure=request.form['sure'],
+            zorluk=request.form['zorluk'],
+            gorsel=gorsel_adi
+        )
+        db.session.add(tarif)
+        db.session.commit()
+        return redirect('/admin')
+    return render_template("admin/tarif_ekle.html")
+@app.route("/admin/yazi/duzenle/<int:yazi_id>", methods=['GET', 'POST'])
+def yazi_duzenle(yazi_id):
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    yazi = Yazi.query.get_or_404(yazi_id)
+    if request.method == 'POST':
+        yazi.baslik = request.form['baslik']
+        yazi.icerik = request.form['icerik']
+        yazi.ozet = request.form['ozet']
+        yazi.kategori = request.form['kategori']
+        gorsel_adi = gorsel_yukle(request.files.get('gorsel'))
+        if gorsel_adi:
+            yazi.gorsel = gorsel_adi
+        db.session.commit()
+        return redirect('/admin')
+    return render_template("admin/yazi_duzenle.html", yazi=yazi)
+
+@app.route("/admin/yazi/sil/<int:yazi_id>")
+def yazi_sil(yazi_id):
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    yazi = Yazi.query.get_or_404(yazi_id)
+    db.session.delete(yazi)
+    db.session.commit()
+    return redirect('/admin')
+
+@app.route("/admin/tarif/duzenle/<int:tarif_id>", methods=['GET', 'POST'])
+def tarif_duzenle(tarif_id):
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    tarif = Tarif.query.get_or_404(tarif_id)
+    if request.method == 'POST':
+        tarif.baslik = request.form['baslik']
+        tarif.malzemeler = request.form['malzemeler']
+        tarif.yapilis = request.form['yapilis']
+        tarif.sure = request.form['sure']
+        tarif.zorluk = request.form['zorluk']
+        gorsel_adi = gorsel_yukle(request.files.get('gorsel'))
+        if gorsel_adi:
+            tarif.gorsel = gorsel_adi
+        db.session.commit()
+        return redirect('/admin')
+    return render_template("admin/tarif_duzenle.html", tarif=tarif)
+
+@app.route("/admin/tarif/sil/<int:tarif_id>")
+def tarif_sil(tarif_id):
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    tarif = Tarif.query.get_or_404(tarif_id)
+    db.session.delete(tarif)
+    db.session.commit()
+    return redirect('/admin')
+@app.template_filter('turkce_tarih')
+def turkce_tarih_filter(dt):
+    return turkce_tarih(dt)
+
+@app.route("/tarifler/<int:tarif_id>")
+def tarif_detay(tarif_id):
+    tarif = Tarif.query.get_or_404(tarif_id)
+    return render_template("tarif_detay.html", tarif=tarif)
+
+with app.app_context():
+    db.create_all()
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5001)
