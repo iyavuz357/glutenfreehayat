@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block title %}Gluten Free Hayat — Anasayfa{% endblock %}
-
 {% block content %}
 
 <section class="hero">
@@ -10,14 +8,55 @@
     <a href="/blog" class="btn">Blog'u Keşfet</a>
 </section>
 
-<section>
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--primary); margin-bottom:0.5rem;">Son Yazılar</h2>
-    <p style="color:var(--text); font-weight:300; margin-bottom:1rem;">Henüz yazı yok — yakında burada olacak ✍️</p>
+<section style="margin-top:3rem;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--primary); margin-bottom:1rem;">Son Yazılar</h2>
+    {% if yazilar %}
+    <div class="grid">
+        {% for yazi in yazilar %}
+        <div class="card" style="padding:0; overflow:hidden;">
+            {% if yazi.gorsel %}
+            <img src="{{ url_for('static', filename='img/uploads/' + yazi.gorsel) }}"
+                 alt="{{ yazi.baslik }}"
+                 style="width:100%; height:200px; object-fit:cover;">
+            {% endif %}
+            <div style="padding:1.5rem;">
+                <span class="tag">{{ yazi.kategori }}</span>
+                <h2><a href="/blog/{{ yazi.id }}">{{ yazi.baslik }}</a></h2>
+                <p>{{ yazi.ozet or yazi.icerik[:120] }}...</p>
+                <p style="margin-top:1rem; font-size:0.85rem; color:var(--accent);">
+                    🗓 {{ yazi.tarih | turkce_tarih }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="font-weight:300;">Henüz yazı yok — yakında burada olacak ✍️</p>
+    {% endif %}
 </section>
 
 <section style="margin-top:3rem;">
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--primary); margin-bottom:0.5rem;">Öne Çıkan Tarifler</h2>
-    <p style="color:var(--text); font-weight:300; margin-bottom:1rem;">Annemin mutfağından glutensiz lezzetler — yakında 🍽️</p>
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--primary); margin-bottom:1rem;">Öne Çıkan Tarifler</h2>
+    {% if tarifler %}
+    <div class="grid">
+        {% for tarif in tarifler %}
+        <div class="card" style="padding:0; overflow:hidden;">
+            {% if tarif.gorsel %}
+            <img src="{{ url_for('static', filename='img/uploads/' + tarif.gorsel) }}"
+                 alt="{{ tarif.baslik }}"
+                 style="width:100%; height:200px; object-fit:cover;">
+            {% endif %}
+            <div style="padding:1.5rem;">
+                <span class="tag">{{ tarif.zorluk or 'Tarif' }}</span>
+                <h2><a href="/tarifler/{{ tarif.id }}">{{ tarif.baslik }}</a></h2>
+                <p style="margin:0.5rem 0;">⏱ {{ tarif.sure or 'Belirtilmemiş' }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="font-weight:300;">Henüz tarif yok — yakında annemin tarifleri burada 🍽️</p>
+    {% endif %}
 </section>
 
 {% endblock %}

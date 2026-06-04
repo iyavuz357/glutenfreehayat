@@ -61,6 +61,16 @@ class Tarif(db.Model):
     def __repr__(self):
         return f'<Tarif {self.baslik}>'
 
+class Yorum(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    icerik = db.Column(db.Text, nullable=False)
+    yazar = db.Column(db.String(100), nullable=False)
+    tarih = db.Column(db.DateTime, default=datetime.utcnow)
+    yazi_id = db.Column(db.Integer, db.ForeignKey('yazi.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Yorum {self.id}>'
+
 # ===== ROTALAR =====
 
 @app.route("/")
@@ -77,7 +87,8 @@ def blog():
 @app.route("/blog/<int:yazi_id>")
 def yazi_detay(yazi_id):
     yazi = Yazi.query.get_or_404(yazi_id)
-    return render_template("yazi_detay.html", yazi=yazi)
+    yorumlar = Yorum.query.filter_by(yazi_id=yazi_id).order_by(Yorum.tarih.asc()).all()
+    return render_template("yazi_detay.html", yazi=yazi, yorumlar=yorumlar)
 
 @app.route("/tarifler")
 def tarifler():
@@ -87,6 +98,18 @@ def tarifler():
 @app.route("/hakkimda")
 def hakkimda():
     return render_template("hakkimda.html")
+
+@app.route("/blog/<int:yazi_id>/yorum", methods=['POST'])
+def yorum_ekle(yazi_id):
+    yazi = Yazi.query.get_or_404(yazi_id)
+    yorum = Yorum(
+        icerik=request.form['icerik'],
+        yazar=request.form['yazar'],
+        yazi_id=yazi_id
+    )
+    db.session.add(yorum)
+    db.session.commit()
+    return redirect(f'/blog/{yazi_id}')
 
 # ===== VERİTABANI OLUŞTUR =====
 @app.route("/admin")
