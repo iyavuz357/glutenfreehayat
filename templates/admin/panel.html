@@ -51,5 +51,32 @@
 {% else %}
 <p style="font-weight:300;">Henüz tarif yok.</p>
 {% endif %}
+<h2 style="font-family:'Comfortaa',sans-serif; font-size:1.5rem; color:var(--primary); margin:2rem 0 1rem;">Yorumlar</h2>
+{% set tum_yorumlar = [] %}
+{% for yazi in yazilar %}
+    {% for yorum in yazi.yorumlar %}
+        {% set _ = tum_yorumlar.append(yorum) %}
+    {% endfor %}
+{% endfor %}
+
+{% if tum_yorumlar %}
+<div class="grid">
+    {% for yazi in yazilar %}
+        {% for yorum in yazi.yorumlar %}
+        <div class="card">
+            <span class="tag">{{ yazi.baslik[:30] }}...</span>
+            <p style="font-weight:700; color:var(--primary); margin:0.5rem 0;">{{ yorum.yazar }}</p>
+            <p style="font-size:0.95rem;">{{ yorum.icerik[:100] }}...</p>
+            <p style="font-size:0.85rem; color:var(--accent); margin:0.5rem 0;">🗓 {{ yorum.tarih | turkce_tarih }}</p>
+            <a href="/admin/yorum/sil/{{ yorum.id }}" class="btn" 
+               style="font-size:0.85rem; padding:0.4rem 1rem; background:red; margin-top:0.5rem;"
+               onclick="return confirm('Bu yorumu silmek istediğine emin misin?')">Sil</a>
+        </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+{% else %}
+<p style="font-weight:300;">Henüz yorum yok.</p>
+{% endif %}
 
 {% endblock %}

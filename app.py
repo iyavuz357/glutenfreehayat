@@ -49,6 +49,7 @@ class Yazi(db.Model):
     tarih = db.Column(db.DateTime, default=datetime.utcnow)
     ozet = db.Column(db.String(300))
     gorsel = db.Column(db.String(200))
+    yorumlar = db.relationship('Yorum', backref='yazi', lazy=True)
 
     def __repr__(self):
         return f'<Yazi {self.baslik}>'
@@ -116,7 +117,7 @@ def yorum_ekle(yazi_id):
     db.session.commit()
     return redirect(f'/blog/{yazi_id}')
 
-# ===== VERİTABANI OLUŞTUR =====
+# ===== ADMİN/VERİTABANI OLUŞTUR =====
 @app.route("/admin")
 def admin():
     if not session.get('admin'):
@@ -230,6 +231,16 @@ def tarif_sil(tarif_id):
 @app.template_filter('turkce_tarih')
 def turkce_tarih_filter(dt):
     return turkce_tarih(dt)
+
+@app.route("/admin/yorum/sil/<int:yorum_id>")
+def yorum_sil(yorum_id):
+    if not session.get('admin'):
+        return redirect('/admin/giris')
+    yorum = Yorum.query.get_or_404(yorum_id)
+    yazi_id = yorum.yazi_id
+    db.session.delete(yorum)
+    db.session.commit()
+    return redirect(f'/blog/{yazi_id}')
 
 @app.route("/tarifler/<int:tarif_id>")
 def tarif_detay(tarif_id):
