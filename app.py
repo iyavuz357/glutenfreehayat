@@ -117,6 +117,21 @@ def yorum_ekle(yazi_id):
     db.session.commit()
     return redirect(f'/blog/{yazi_id}')
 
+@app.route("/ara")
+def ara():
+    sorgu = request.args.get('q', '')
+    if sorgu:
+        yazilar = Yazi.query.filter(
+            Yazi.baslik.contains(sorgu) | Yazi.icerik.contains(sorgu)
+        ).all()
+        tarifler = Tarif.query.filter(
+            Tarif.baslik.contains(sorgu) | Tarif.yapilis.contains(sorgu)
+        ).all()
+    else:
+        yazilar = []
+        tarifler = []
+    return render_template("ara.html", yazilar=yazilar, tarifler=tarifler, sorgu=sorgu)
+
 # ===== ADMİN/VERİTABANI OLUŞTUR =====
 @app.route("/admin")
 def admin():
