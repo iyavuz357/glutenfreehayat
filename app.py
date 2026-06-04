@@ -3,18 +3,23 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'glutenfreehayat-gizli-anahtar-2026'
+app.secret_key = os.getenv('SECRET_KEY')
+ADMIN_SIFRE = os.getenv('ADMIN_SIFRE')
 
 UPLOAD_FOLDER = 'static/img/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-ADMIN_SIFRE = 'admin123'
+
 
 db = SQLAlchemy(app)
 
