@@ -4,12 +4,12 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///site.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 ADMIN_SIFRE = os.getenv('ADMIN_SIFRE')
