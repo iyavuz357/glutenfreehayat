@@ -158,6 +158,21 @@ nav ul li a:hover {
     .logo {
         font-size: 1.1rem;
     }
+    .hero h1 {
+    font-size: 1.8rem;
+        }
+
+    body {
+    overflow-x: hidden;
+    }
+
+    body {
+    overflow-x: hidden;
+    }
+
+    main {
+    padding: 1.5rem 1rem;
+    }
 }
 
 /* ===== MAIN ===== */
