@@ -9,25 +9,33 @@
 </head>
 <body>
 
-    <header>
-        <nav>
-            <div class="logo">
-                🌾 Gluten Free Hayat
-            </div>
-            <ul>
-                <li><a href="/">Anasayfa</a></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/tarifler">Tarifler</a></li>
-                <li><a href="/hakkimda">Hakkımda</a></li>
-            </ul>
-<form method="GET" action="/ara" style="display:flex; gap:0.5rem;">
-    <input type="text" name="q" placeholder="Ara..." 
-           style="padding:0.4rem 0.75rem; border:1px solid var(--border); border-radius:20px; font-size:0.9rem; background:var(--bg); width:150px;">
-    <button type="submit" class="btn" style="border:none; cursor:pointer; padding:0.4rem 1rem; font-size:0.9rem;">🔍</button>
-</form>
-        </nav>
-    </header>
+<header>
+    <nav>
+        <div class="logo">
+            🌾 Gluten Free Hayat
+        </div>
+        <button class="hamburger" onclick="toggleMenu()" id="hamburger">☰</button>
+        <ul id="nav-menu">
+            <li><a href="/">Anasayfa</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/tarifler">Tarifler</a></li>
+            <li><a href="/hakkimda">Hakkımda</a></li>
+        </ul>
+        <form method="GET" action="/ara" class="nav-search">
+            <input type="text" name="q" placeholder="Ara...">
+            <button type="submit">🔍</button>
+        </form>
+    </nav>
+</header>
 
+<script>
+function toggleMenu() {
+    const menu = document.getElementById('nav-menu');
+    const hamburger = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    hamburger.textContent = menu.classList.contains('open') ? '✕' : '☰';
+}
+</script>
     <main>
         {% block content %}{% endblock %}
     </main>
