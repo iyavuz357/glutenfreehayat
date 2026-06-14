@@ -4,6 +4,23 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+import boto3
+from botocore.client import Config
+
+R2_ACCOUNT_ID = os.getenv('R2_ACCOUNT_ID')
+R2_ACCESS_KEY_ID = os.getenv('R2_ACCESS_KEY_ID')
+R2_SECRET_ACCESS_KEY = os.getenv('R2_SECRET_ACCESS_KEY')
+R2_BUCKET_NAME = os.getenv('R2_BUCKET_NAME')
+R2_PUBLIC_URL = os.getenv('R2_PUBLIC_URL')
+
+s3 = boto3.client(
+    's3',
+    endpoint_url=f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com',
+    aws_access_key_id=R2_ACCESS_KEY_ID,
+    aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+    config=Config(signature_version='s3v4'),
+    region_name='auto'
+)
 
 
 load_dotenv()
@@ -34,9 +51,22 @@ def gorsel_yukle(dosya):
         ext = dosya.filename.rsplit('.', 1)[-1].lower()
         if ext in ALLOWED_EXTENSIONS:
             filename = secure_filename(dosya.filename)
-            dosya.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            s3.upload_fileobj(
+                dosya,
+                R2_BUCKET_NAME,
+                filename,
+                ExtraArgs={'ContentType': dosya.content_type}
+            )
             return filename
     return None
+
+def gorsel_url(filename):
+    if filename:
+        return f"{R2_PUBLIC_URL}/{filename}"
+    
+    return None
+app.jinja_env.globals['gorsel_url'] = gorsel_url
+
 
 def turkce_tarih(dt):
     return f"{dt.day} {AYLAR[dt.month]} {dt.year}"

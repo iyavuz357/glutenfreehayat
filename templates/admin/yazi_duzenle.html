@@ -39,7 +39,7 @@
             <div style="margin-bottom:1.5rem;">
                 <label style="display:block; font-weight:700; margin-bottom:0.5rem;">Kapak Görseli</label>
                 {% if yazi.gorsel %}
-                <img src="{{ url_for('static', filename='img/uploads/' + yazi.gorsel) }}" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-bottom:0.5rem;">
+                <img src="{{ gorsel_url(yazi.gorsel) }}" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-bottom:0.5rem;">
                 {% endif %}
                 <input type="file" name="gorsel" accept="image/*" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px; font-size:1rem; background:var(--bg);">
             </div>

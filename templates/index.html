@@ -18,7 +18,7 @@
         {% for yazi in yazilar %}
         <div class="card" style="padding:0; overflow:hidden;">
             {% if yazi.gorsel %}
-            <img src="{{ url_for('static', filename='img/uploads/' + yazi.gorsel) }}"
+            <img src="{{ gorsel_url(yazi.gorsel) }}"
                  alt="{{ yazi.baslik }}"
                  style="width:100%; height:200px; object-fit:cover;">
             {% endif %}
@@ -45,7 +45,7 @@
         {% for tarif in tarifler %}
         <div class="card" style="padding:0; overflow:hidden;">
             {% if tarif.gorsel %}
-            <img src="{{ url_for('static', filename='img/uploads/' + tarif.gorsel) }}"
+            <img src="{{ gorsel_url(tarif.gorsel) }}"
                  alt="{{ tarif.baslik }}"
                  style="width:100%; height:200px; object-fit:cover;">
             {% endif %}

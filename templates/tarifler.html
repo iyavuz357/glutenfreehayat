@@ -14,7 +14,7 @@
         {% for tarif in tarifler %}
         <div class="card" style="padding:0; overflow:hidden;">
             {% if tarif.gorsel %}
-            <img src="{{ url_for('static', filename='img/uploads/' + tarif.gorsel) }}"
+            <img src="{{ gorsel_url(tarif.gorsel) }}"
                  alt="{{ tarif.baslik }}"
                  style="width:100%; height:200px; object-fit:cover;">
             {% endif %}
