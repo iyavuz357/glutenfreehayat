@@ -12,7 +12,7 @@
 {% if tarifler %}
     <div class="grid">
         {% for tarif in tarifler %}
-        <div class="card" style="padding:0; overflow:hidden;">
+        <a href="/tarifler/{{ tarif.id }}" class="card" style="padding:0; overflow:hidden; display:block; text-decoration:none; color:inherit;">
             {% if tarif.gorsel %}
             <img src="{{ gorsel_url(tarif.gorsel) }}"
                  alt="{{ tarif.baslik }}"
@@ -20,13 +20,11 @@
             {% endif %}
             <div style="padding:1.5rem;">
                 <span class="tag">{{ tarif.zorluk or 'Tarif' }}</span>
-                <h2><a href="/tarifler/{{ tarif.id }}">{{ tarif.baslik }}</a></h2>
+                <h2>{{ tarif.baslik }}</h2>
                 <p style="margin:0.5rem 0;">⏱ {{ tarif.sure or 'Belirtilmemiş' }}</p>
                 <p style="font-size:0.95rem; font-weight:300;">{{ tarif.yapilis[:100] }}...</p>
             </div>
-        </div>
-        {% endfor %}
-    </div>
+        </a>
 {% else %}
     <div class="card" style="text-align:center; padding:3rem;">
         <p style="font-size:1.1rem;">Henüz tarif yok — yakında annemin tarifleri burada 🍽️</p>

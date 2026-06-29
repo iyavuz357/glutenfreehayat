@@ -22,7 +22,7 @@
         {% if yazilar %}
         <div class="grid">
             {% for yazi in yazilar %}
-            <div class="card" style="padding:0; overflow:hidden;">
+            <a href="/blog/{{ yazi.id }}" class="card" style="padding:0; overflow:hidden; display:block; text-decoration:none; color:inherit;">
                 {% if yazi.gorsel %}
                 <img src="{{ gorsel_url(yazi.gorsel) }}"
                      alt="{{ yazi.baslik }}"
@@ -30,13 +30,13 @@
                 {% endif %}
                 <div style="padding:1.5rem;">
                     <span class="tag">{{ yazi.kategori }}</span>
-                    <h2><a href="/blog/{{ yazi.id }}">{{ yazi.baslik }}</a></h2>
+                    <h2>{{ yazi.baslik }}</h2>
                     <p>{{ yazi.ozet or yazi.icerik[:120] }}...</p>
                     <p style="margin-top:1rem; font-size:0.85rem; color:var(--accent);">
                         🗓 {{ yazi.tarih | turkce_tarih }}
                     </p>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
         {% else %}
@@ -51,7 +51,7 @@
         {% if tarifler %}
         <div class="grid">
             {% for tarif in tarifler %}
-            <div class="card" style="padding:0; overflow:hidden;">
+            <a href="/tarifler/{{ tarif.id }}" class="card" style="padding:0; overflow:hidden; display:block; text-decoration:none; color:inherit;">
                 {% if tarif.gorsel %}
                 <img src="{{ gorsel_url(tarif.gorsel) }}"
                      alt="{{ tarif.baslik }}"
@@ -59,10 +59,10 @@
                 {% endif %}
                 <div style="padding:1.5rem;">
                     <span class="tag">{{ tarif.zorluk or 'Tarif' }}</span>
-                    <h2><a href="/tarifler/{{ tarif.id }}">{{ tarif.baslik }}</a></h2>
+                    <h2>{{ tarif.baslik }}</h2>
                     <p style="margin:0.5rem 0;">⏱ {{ tarif.sure or 'Belirtilmemiş' }}</p>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
         {% else %}
