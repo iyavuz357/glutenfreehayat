@@ -67,7 +67,6 @@ def gorsel_url(filename):
     return None
 app.jinja_env.globals['gorsel_url'] = gorsel_url
 
-
 def turkce_tarih(dt):
     return f"{dt.day} {AYLAR[dt.month]} {dt.year}"
 
@@ -103,6 +102,7 @@ class Yorum(db.Model):
     yazar = db.Column(db.String(100), nullable=False)
     tarih = db.Column(db.DateTime, default=datetime.utcnow)
     yazi_id = db.Column(db.Integer, db.ForeignKey('yazi.id'), nullable=False)
+    begeni_sayisi = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return f'<Yorum {self.id}>'
@@ -286,6 +286,17 @@ def yorum_sil(yorum_id):
     db.session.delete(yorum)
     db.session.commit()
     return redirect(f'/blog/{yazi_id}')
+
+@app.route("/yorum/<int:yorum_id>/begen", methods=['POST'])
+def yorum_begen(yorum_id):
+    yorum = Yorum.query.get_or_404(yorum_id)
+    begenilenler = session.get('begenilen_yorumlar', [])
+    if yorum_id not in begenilenler:
+        yorum.begeni_sayisi = (yorum.begeni_sayisi or 0) + 1
+        db.session.commit()
+        begenilenler.append(yorum_id)
+        session['begenilen_yorumlar'] = begenilenler
+    return redirect(request.referrer or f'/blog/{yorum.yazi_id}')
 
 @app.route("/tarifler/<int:tarif_id>")
 def tarif_detay(tarif_id):

@@ -27,21 +27,22 @@
         💬 Yorumlar ({{ yorumlar|length }})
     </h2>
 
-    {% if yorumlar %}
-        {% for yorum in yorumlar %}
+  {% for yorum in yorumlar %}
         <div class="card" style="margin-bottom:1rem; padding:1.25rem;">
             <p style="font-weight:700; color:var(--primary); margin-bottom:0.25rem;">{{ yorum.yazar }}</p>
             <p style="font-size:0.85rem; color:var(--accent); margin-bottom:0.75rem;">
                 {{ yorum.tarih | turkce_tarih }}
             </p>
-            <p>{{ yorum.icerik }}</p>
+            <p style="margin-bottom:0.75rem;">{{ yorum.icerik }}</p>
+            <form method="POST" action="/yorum/{{ yorum.id }}/begen" style="display:inline;">
+                <button type="submit" style="background:none; border:none; cursor:pointer; color:var(--primary); font-size:0.9rem; display:flex; align-items:center; gap:0.3rem; padding:0;">
+                    ❤️ {{ yorum.begeni_sayisi or 0 }}
+                </button>
+            </form>
         </div>
-        {% endfor %}
-    {% else %}
-        <p style="font-weight:300; margin-bottom:1.5rem;">Henüz yorum yok — ilk yorumu sen yap! 💬</p>
-    {% endif %}
-
-    <div class="card" style="padding:2rem; margin-top:1.5rem;">
+    {% endfor %}
+    
+        <div class="card" style="padding:2rem; margin-top:1.5rem;">
         <h3 style="font-family:'Comfortaa',sans-serif; color:var(--primary); margin-bottom:1.5rem;">Yorum Yap</h3>
         <form method="POST" action="/blog/{{ yazi.id }}/yorum">
             <div style="margin-bottom:1rem;">
